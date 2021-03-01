@@ -27,3 +27,27 @@
 // View departments, roles, employees
 
 // Update employee roles
+
+const mysql = require('mysql');
+const inquirer = require('inquirer');
+const contab = require('console.table');
+const express = require('express');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    port: 3001,
+    user: 'root',
+    password: 'sarah123',
+    database: 'emp_traxDB',
+});
+
+connection.connect((err) => {
+    if(err) {
+        console.log(`error connecting: ${err.stack}`);
+        return;
+    }
+    console.log(`connected as id ${connection.threadId}`);
+});
