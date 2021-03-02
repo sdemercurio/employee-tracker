@@ -62,9 +62,72 @@ const init = () => {
             'Remove Employee',
             'Update Employee Role',
             'Update Employee Manager',
+            'End',
         ],
     })
+    .then((answer) => {
+        switch (answer.action) {
+          case 'View All employees':
+            viewAll();
+            break;
+          case "View Employees by Department":
+            viewEmployeeByDepartment();
+            break;
+          case "View Employees by Manager":
+            viewEmployeeByManager();
+            break;
+          case "Add Employee":
+            addEmployee();
+            break;
+          case "Remove Employees":
+            removeEmployees();
+            break;
+          case "Update Employee Role":
+            updateEmployeeRole();
+            break;
+          case "Add Role":
+            addRole();
+            break;
+          // case "Remove Role":
+          //   removeRole();
+          //   break;
+  
+          // case "Update Employee MAnager":
+          //   updateEmployeeManager();
+          //   break;
+  
+          case "End":
+            connection.end();
+            break;
+        }
+      });
 };
+
+function viewAll() {
+    const query =
+      `SELECT 
+      employee.id, 
+      employee.first_name AS 'First Name', 
+      employee.last_name AS 'Last Name', 
+      role.title as Title, 
+      role.salary AS Salary, 
+      department.name AS Department, 
+      CONCAT(manager.first_name, ' ', manager.last_name) AS Manager 
+  FROM employee 
+      JOIN role ON employee.role_id = role.id 
+      JOIN department ON role.department_id = department.id 
+      LEFT JOIN employee AS manager ON employee.manager_id = manager.id`
+  
+    connection.query(query,(err, res) => {
+      if (err) throw err;
+  
+      console.table(res);
+      console.log("All employees!\n");
+  
+      init();
+    });
+    // console.log(query.sql);
+  }
 
 
 init();
