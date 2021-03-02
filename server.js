@@ -80,7 +80,7 @@ const init = () => {
             addEmployee();
             break;
           case "Remove Employees":
-            removeEmployees();
+            removeEmployee();
             break;
           case "Update Employee Role":
             updateEmployeeRole();
@@ -88,13 +88,12 @@ const init = () => {
           case "Add Role":
             addRole();
             break;
-          // case "Remove Role":
-          //   removeRole();
-          //   break;
-  
-          // case "Update Employee MAnager":
-          //   updateEmployeeManager();
-          //   break;
+          case "Remove Employee":
+            removeRole();
+            break;
+          case "Update Employee Manager":
+            updateEmployeeManager();
+            break;
   
           case "End":
             connection.end();
@@ -126,7 +125,26 @@ function viewAll() {
   
       init();
     });
-    // console.log(query.sql);
+  }
+
+  function viewEmployeeByDepartment() {
+    const query =
+    // `SELECT d.id, d.name, r.salary AS budget
+    // FROM employee e
+    // LEFT JOIN role r
+    //   ON e.role_id = r.id
+    // LEFT JOIN department d
+    // ON d.id = r.department_id
+    // GROUP BY d.id, d.name`
+  
+    connection.query(query,(err, res) => {
+      if (err) throw err;
+  
+      console.table(res);
+      console.log("All employees!\n");
+  
+      init();
+    });
   }
 
 
