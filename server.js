@@ -51,3 +51,7 @@ connection.connect((err) => {
     }
     console.log(`connected as id ${connection.threadId}`);
 });
+
+// employee self referejntial
+
+//join of tables
