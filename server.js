@@ -102,7 +102,7 @@ const init = () => {
       });
 };
 
-function viewAll() {
+const viewAll = () => {
     const query =
       `SELECT 
       employee.id, 
@@ -127,7 +127,22 @@ function viewAll() {
     });
   }
 
-  function viewEmployeeByDepartment() {
+  const addEmployee = () => {
+    inquirer.prompt({
+        name: 'action',
+        type: 'rawlist',
+        message: 'What would you like to do?',
+        choices: [
+            'View All employees',
+            'View All Employees By Department',
+            'View All Employees By Manager',
+            'Add Employee',
+            'Remove Employee',
+            'Update Employee Role',
+            'Update Employee Manager',
+            'End',
+        ],
+    })
     const query =
     // `SELECT d.id, d.name, r.salary AS budget
     // FROM employee e
@@ -156,6 +171,25 @@ init();
 // Add departments, roles, employees
 // View departments, roles, employees
 // Update employee roles
+
+// viewEmployeeByDepartment();
+// I need first_name, last_name of employee table
+// I need department.id which is referenced by role.department_id which is referenced by employee.role_id
+
+// viewEmployeeByManager();
+// SELECT 
+
+// addEmployee();
+
+// removeEmployee();
+
+// updateEmployeeRole();
+
+// addRole();
+
+// removeRole();
+
+// updateEmployeeManager();
 
 // =============== bonus =====================
 
