@@ -30,19 +30,19 @@ const cTable = require('console.table');
 // =============== establishing connection =====================
 
 const connection = mysql.createConnection({
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: 'sarah123',
-    database: 'emp_traxDB',
+  host: 'localhost',
+  port: 3306,
+  user: 'root',
+  password: 'sarah123',
+  database: 'emp_traxDB',
 });
 
 connection.connect((err) => {
-    if(err) {
-        console.log(`error connecting: ${err.stack}`);
-        return;
-    }
-    console.log(`connected as id ${connection.threadId}`);
+  if (err) {
+    console.log(`error connecting: ${err.stack}`);
+    return;
+  }
+  console.log(`connected as id ${connection.threadId}`);
 });
 
 // =============== inquirer prompts =====================
@@ -50,61 +50,69 @@ connection.connect((err) => {
 // What would you like to do?
 
 const init = () => {
-    inquirer.prompt({
-        name: 'action',
-        type: 'rawlist',
-        message: 'What would you like to do?',
-        choices: [
-            'View All employees',
-            'View All Employees By Department',
-            'View All Employees By Manager',
-            'Add Employee',
-            'Remove Employee',
-            'Update Employee Role',
-            'Update Employee Manager',
-            'End',
-        ],
-    })
-    .then((answer) => {
-        switch (answer.action) {
-          case 'View All employees':
-            viewAll();
-            break;
-          case "View Employees by Department":
-            viewEmployeeByDepartment();
-            break;
-          case "View Employees by Manager":
-            viewEmployeeByManager();
-            break;
-          case "Add Employee":
-            addEmployee();
-            break;
-          case "Remove Employees":
-            removeEmployee();
-            break;
-          case "Update Employee Role":
-            updateEmployeeRole();
-            break;
-          case "Add Role":
-            addRole();
-            break;
-          case "Remove Employee":
-            removeRole();
-            break;
-          case "Update Employee Manager":
-            updateEmployeeManager();
-            break;
-  
-          case "End":
-            connection.end();
-            break;
-        }
-      });
-};
+  inquirer.prompt([
+    {
+      message: "What would you like to do?",
+      type: "list",
+      name: "action",
+      choices: [
+        'View all employees',
+        'View roles',
+        'View departments',
+        'Add employee',
+        'Add role',
+        'Add department',
+        'Update employee role',
+        'exit']
+    }
+
+  ]).then((response) => {
+    if (response.action === 'View all employees') {
+      viewAll();
+    }
+    else if (response.action === 'Add department') {
+      addDepartment();
+    }
+    else if (response.action === 'View roles') {
+      viewRoles();
+    }
+    else if (response.action === 'View departments') {
+      viewDepartments();
+    }
+    else if (response.action === 'Add employee') {
+      addEmployee();
+    }
+    else if (response.action === 'Add role') {
+      addRole();
+    }
+    else if (response.action === 'Update employee role') {
+      updateEmployeeRole();
+    }
+    else {
+      connection.end();
+      return;
+    }
+  });
+}
+
+const addDepartment = () => {
+  inquirer.prompt([
+    {
+      message: "What is the department's name?",
+      type: "input",
+      name: "departmentName"
+    }
+  ]).then((response) => {
+    connection.query("INSERT INTO departments (name) VALUES (?)", response.departmentName, (err, result) => {
+      console.log("Success!");
+      init();
+    });
+  });
+}
 
 const viewAll = () => {
-    const query =
-      `SELECT 
+  const query =
+    `SELECT 
       employee.id, 
       employee.first_name AS 'First Name', 
       employee.last_name AS 'Last Name', 
@@ -116,52 +124,16 @@ const viewAll = () => {
       JOIN role ON employee.role_id = role.id 
       JOIN department ON role.department_id = department.id 
       LEFT JOIN employee AS manager ON employee.manager_id = manager.id`
-  
-    connection.query(query,(err, res) => {
-      if (err) throw err;
-  
-      console.table(res);
-      console.log("All employees!\n");
-  
-      init();
-    });
-  }
 
-  const addEmployee = () => {
-    inquirer.prompt({
-        name: 'action',
-        type: 'rawlist',
-        message: 'What would you like to do?',
-        choices: [
-            'View All employees',
-            'View All Employees By Department',
-            'View All Employees By Manager',
-            'Add Employee',
-            'Remove Employee',
-            'Update Employee Role',
-            'Update Employee Manager',
-            'End',
-        ],
-    })
-    const query =
-    // `SELECT d.id, d.name, r.salary AS budget
-    // FROM employee e
-    // LEFT JOIN role r
-    //   ON e.role_id = r.id
-    // LEFT JOIN department d
-    // ON d.id = r.department_id
-    // GROUP BY d.id, d.name`
-  
-    connection.query(query,(err, res) => {
-      if (err) throw err;
-  
-      console.table(res);
-      console.log("All employees!\n");
-  
-      init();
-    });
-  }
+  connection.query(query, (err, res) => {
+    if (err) throw err;
 
+    console.table(res);
+    console.log("All employees!\n");
+
+    init();
+  });
+};
 
 init();
 
