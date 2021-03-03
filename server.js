@@ -164,6 +164,18 @@ const viewAll = () => {
   });
 };
 
+const viewDepartments = () => {
+  connection.query(
+    "SELECT * FROM department", (err, results) => {
+        if(err) throw err;
+
+        const table = cTable.getTable("Department", results);
+
+        console.table(table);
+        init();
+    });
+}
+
 const addEmployee = () => {
   connection.query("SELECT * FROM role", (err, roles) => {
     if (err) throw err;
