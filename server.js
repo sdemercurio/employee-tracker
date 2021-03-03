@@ -97,17 +97,25 @@ const init = () => {
 
 const addDepartment = () => {
   inquirer.prompt([
-    {
-      message: "What is the department's name?",
-      type: "input",
-      name: "departmentName"
-    }
-  ]).then((response) => {
-    connection.query("INSERT INTO departments (name) VALUES (?)", response.departmentName, (err, result) => {
-      console.log("Success!");
-      init();
-    });
-  });
+      {
+          type: "input",
+          name: "departmentName",
+          message: 'Please enter a name for the department you wish to add: '
+      }
+  ])
+      .then((data) => {
+          const query = connection.query(`INSERT INTO department SET ?`,
+              {
+                  name: data.departmentName
+              },
+              (err, res) => {
+                  if (err) throw err;
+                  console.log('Department added successfully!');
+                  init();
+              }
+          )
+          console.log(query.sql);
+      });
 }
 
 const viewAll = () => {
@@ -134,6 +142,77 @@ const viewAll = () => {
     init();
   });
 };
+
+const addEmployee = async () => {
+  connection.query("SELECT * FROM role", (err, roles) => {
+      if(err) throw err;
+
+      connection.query("SELECT * FROM employee", (err, employee) => {
+          if(err) throw err;
+
+          const managers = employee.filter(employee => {
+              let roleId;
+
+                      roles.forEach(role => {
+                          if(role.title.toLowerCase() === "manager")
+                              roleId = role.id;
+                      });
+
+                      //console.log("Role ID: " + roleId);
+
+                      if(employee.role_id === roleId) {
+                          return employee;
+                      }
+          });
+
+          managers.push({id: null, first_name: "null", last_name: "null", manager_id: null});
+
+          inquirer.prompt([
+              {
+                  message: "Please enter a first name",
+                  type: "input",
+                  name: "firstName"
+              },
+              {
+                  message: "Please enter a last name",
+                  type: "input",
+                  name: "lastName"
+              },
+              {
+                  message: "Please choose a role",
+                  type: "list",
+                  name: "role_id",
+                  choices: roles.map(role => {
+                      return {
+                          name: role.title,
+                          value: role.id
+                      }
+                  })
+              },
+              {
+                  message: "Please choose a manager",
+                  type: "list",
+                  name: "manager_id",
+                  choices: [
+                    'Jonathan Fishman',
+                    'Trey Anastasio',
+                    'Bob Loblah',
+                    'Some Person',
+                    'exit'
+                  ],
+              }
+          ])
+            .then((response) => {
+              connection.query("INSERT INTO employee SET ?", response, (err, result) => {
+                  console.log("Success!");
+                  console.table(result);
+                  init();
+              });
+          })
+      });
+      
+  });
+}
 
 init();
 
