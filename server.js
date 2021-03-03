@@ -48,7 +48,7 @@ connection.connect((err) => {
   console.log(`connected as id ${connection.threadId}`);
 });
 
-// =============== inquirer prompts =====================
+// =============== Fancy Title =====================
 
 // What would you like to do?
 
@@ -64,6 +64,10 @@ empTrax
 });
 
 empTrax.parse(process.argv);
+
+// =============== inquirer prompts =====================
+
+// What would you like to do?
 
 
 const init = () => {
