@@ -1,6 +1,6 @@
 # Employee Tracker
 
-![EmpTrax Init](Assets\EmpTrax_init.PNG)
+![EmpTrax Init](Assets/EmpTrax_init.PNG)
 
 
 ![All Employees Displayed](Assets/all_emp.PNG)
