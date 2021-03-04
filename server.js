@@ -1,26 +1,3 @@
-// viewing all employees by manager
-
-// Get sql statemtnts set first
-
-// Nested inquirer stuff
-
-//department:
-// id - INT PRIMARY KEY
-// name - VARCHAR(30) to hold department name
-
-// role:
-// id - INT PRIMARY KEY
-// title - VARCHAR(30) to hold role title
-// salary - DECIMAL to hold role salary
-// department_id - INT to hold reference to department role belongs to
-
-// employee:
-// id - INT PRIMARY KEY
-// first_name - VARCHAR(30) to hold employee first name
-// last_name - VARCHAR(30) to hold employee last name
-// role_id - INT to hold reference to role employee has
-// manager_id - INT to hold reference to another employee that manages the employee being Created. This field may be null if the employee has no manager
-// Build a command-line application that at a minimum allows the user to:
 
 // =============== requiring modules =====================
 const empTrax = require('commander');
@@ -50,18 +27,16 @@ connection.connect((err) => {
 
 // =============== Fancy Title =====================
 
-// What would you like to do?
+empTrax
+  .command('init')
 
-empTrax               
-    .command('init')
+  .description('Draw app banner')
 
-    .description('Draw app banner')
-
-    .action(() => {
-        console.log(chalk.blueBright(figlet.textSync('EmpTrax', { horizontalLayout: 'full'})
-        )
-        );
-});
+  .action(() => {
+    console.log(chalk.blueBright(figlet.textSync('EmpTrax', { horizontalLayout: 'full' })
+    )
+    );
+  });
 
 empTrax.parse(process.argv);
 
@@ -116,6 +91,10 @@ const init = () => {
   });
 }
 
+// =============== Functions =====================
+
+// add department
+
 const addDepartment = () => {
   inquirer.prompt([
     {
@@ -138,6 +117,8 @@ const addDepartment = () => {
       console.log(query.sql);
     });
 }
+
+// view all employees, departments, roles, salary, manager_id, department_id
 
 const viewAll = () => {
   const query =
@@ -164,30 +145,36 @@ const viewAll = () => {
   });
 };
 
+// view departments
+
 const viewDepartments = () => {
-  connection.query("SELECT * FROM department", 
-  (err, results) => {
-        if(err) throw err;
+  connection.query("SELECT * FROM department",
+    (err, results) => {
+      if (err) throw err;
 
-        const table = cTable.getTable("Department", results);
+      const table = cTable.getTable("Department", results);
 
-        console.table(table);
-        init();
+      console.table(table);
+      init();
     });
 };
 
+// view roles
+
 const viewRoles = () => {
-  connection.query( "SELECT * FROM role", 
-  (err, results) => {
-    if (err) throw err;
+  connection.query("SELECT * FROM role",
+    (err, results) => {
+      if (err) throw err;
 
-    const table = cTable.getTable("Roles", results);
+      const table = cTable.getTable("Roles", results);
 
-    console.table(table);
-    init();
-  
-  })
+      console.table(table);
+      init();
+
+    })
 };
+
+// add employee
 
 const addEmployee = () => {
   connection.query("SELECT * FROM role", (err, roles) => {
@@ -203,8 +190,6 @@ const addEmployee = () => {
           if (role.title.toLowerCase() === "manager")
             roleId = role.id;
         });
-
-        //console.log("Role ID: " + roleId);
 
         if (employee.role_id === roleId) {
           return employee;
@@ -284,37 +269,51 @@ const addEmployee = () => {
   });
 };
 
+// add role
+
+const addRole = () => {
+  connection.query('SELECT * FROM department', (err, res) => {
+    if (err) throw err;
+
+    inquirer.prompt([
+      {
+        message: 'What is the title of new role?',
+        type: 'input',
+        name: 'title'
+      },
+      {
+        message: "Please enter salary: ",
+        type: "input",
+        name: "salary",
+        validate: (value) => {
+          return !isNaN(value) ? true : "Please provide a number value.";
+        }
+      },
+      {
+        message: "Which department does this role belong to?",
+        type: "list",
+        name: "department",
+        choices: [
+          'Sales',
+          'Legal',
+          'Engineering',
+          'Finance',
+        ], 
+        }
+    ]).then((response) => {
+        connection.query("INSERT INTO role SET ?", 
+        {
+          title: response.title, 
+          salary: response.salary, 
+          department_id: response.department_id
+        }, 
+        (err) => {
+          if (err) throw err;
+          console.log("Success!");
+          init();
+        });
+      });
+  });
+};
+
 init();
-
-
-// =============== functions =====================
-
-// Add departments, roles, employees
-// View departments, roles, employees
-// Update employee roles
-
-// viewEmployeeByDepartment();
-// I need first_name, last_name of employee table
-// I need department.id which is referenced by role.department_id which is referenced by employee.role_id
-
-// viewEmployeeByManager();
-// SELECT 
-
-// addEmployee();
-
-// removeEmployee();
-
-// updateEmployeeRole();
-
-// addRole();
-
-// removeRole();
-
-// updateEmployeeManager();
-
-// =============== bonus =====================
-
-// Update employee managers
-// View employees by manager
-// Delete departments, roles, and employees
-// View the total utilized budget of a department -- ie the combined salaries of all employees in that department
