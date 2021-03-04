@@ -49,11 +49,7 @@ Like several other homework adssignments, this is a work in progress. I spent so
 
 You are required to submit the following:
 
-[!GitHub Repo](https://github.com/sdemercurio/employee-tracker.git)
+[GitHub Repo](https://github.com/sdemercurio/employee-tracker.git)
 
 [Link to video](https://youtu.be/mwywjiEyQ7E)
 
-* A video demonstrating the entirety of the app's functionality 
-
-- - -
-© 2021 Trilogy Education Services, LLC, a 2U, Inc. brand. Confidential and Proprietary. All Rights Reserved.
