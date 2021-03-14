@@ -51,5 +51,4 @@ You are required to submit the following:
 
 [GitHub Repo](https://github.com/sdemercurio/employee-tracker.git)
 
-[Link to video](https://youtu.be/mwywjiEyQ7E)
 
